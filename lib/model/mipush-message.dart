@@ -33,7 +33,7 @@ class MiPushMessage{
     this.extra
   });
 
-  factory MiPushMessage.fromJson(Map<String, dynamic> json) {
+  factory MiPushMessage.fromJson(Map<dynamic, dynamic> json) {
     return MiPushMessage(
       messageId:json['messageId'],
       messageType:json['messageType'],
@@ -49,11 +49,11 @@ class MiPushMessage{
       title:json['title'],
       category:json['category'],
       arrivedMessage:json['arrivedMessage'],
-      extra:json['extra'] == null ? null : MiPushMessageExtra.fromJson(json['extra'])
+      extra:json['extra'] == null ? null : (json['extra'] is Map<dynamic, dynamic>)?MiPushMessageExtra.fromJson(json['extra'] as Map<dynamic, dynamic>):null
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<dynamic, dynamic> toJson() => {
     'messageId': messageId,
     'messageType': messageType,
     'content': content,
@@ -91,7 +91,7 @@ class MiPushMessageExtra {
     this.mTs,
   });
 
-  factory MiPushMessageExtra.fromJson(Map<String, dynamic> json) {
+  factory MiPushMessageExtra.fromJson(Map<dynamic, dynamic> json) {
     return MiPushMessageExtra(
       highPriorityEvent: json['high_priority_event'],
       feTs: json['fe_ts'],

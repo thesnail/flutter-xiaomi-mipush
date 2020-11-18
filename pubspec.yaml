@@ -1,8 +1,8 @@
-name: flutter_xiaomi_mipush
-description: A new flutter plugin project.
-version: 0.0.1
-author:
-homepage:
+name: fluttermipush
+description: Flutter 小米推送
+version: 0.1.1
+author: Scott Wang
+homepage: 
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

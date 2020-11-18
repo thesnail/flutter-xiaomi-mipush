@@ -9,7 +9,6 @@ import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 import java.util.Map;
-
 import io.flutter.plugin.common.MethodChannel;
 
 
@@ -48,37 +47,47 @@ public class MiPushBroadcastReceiver extends PushMessageReceiver {
 
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
-        this.invokeListener("onReceivePassThroughMessage", message);
+        this.invokeListener(MessageType.ReceivePassThroughMessage,JSON.parseObject(JSON.toJSONString(message), new TypeReference<Map<String, Object>>(){}));
     }
 
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
-        this.invokeListener("onNotificationMessageClicked", message);
+        this.invokeListener(MessageType.NotificationMessageClicked,JSON.parseObject(JSON.toJSONString(message), new TypeReference<Map<String, Object>>(){}));
 
     }
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
-        this.invokeListener("onNotificationMessageArrived", message);
+        this.invokeListener(MessageType.NotificationMessageArrived,JSON.parseObject(JSON.toJSONString(message), new TypeReference<Map<String, Object>>(){}));
     }
     @Override
     public void onCommandResult(Context context, MiPushCommandMessage message) {
-        this.invokeListener("onCommandResult", message);
+        this.invokeListener(MessageType.CommandResult,JSON.parseObject(JSON.toJSONString(message), new TypeReference<Map<String, Object>>(){}));
     }
     @Override
     public void onReceiveRegisterResult(Context context, MiPushCommandMessage message) {
-        this.invokeListener("onReceiveRegisterResult", message);
+        this.invokeListener(MessageType.ReceiveRegisterResult,JSON.parseObject(JSON.toJSONString(message), new TypeReference<Map<String, Object>>(){}));
     }
 
-    private void invokeListener(final String method,final Object params){
+    @Override
+    public void onRequirePermissions(Context context, String[] strings) {
+        super.onRequirePermissions(context, strings);
+        this.invokeListener(MessageType.RequirePermissions,JSON.parseObject(JSON.toJSONString(strings)));
+    }
+
+    private void invokeListener(final MessageType method, final Object params){
         final MethodChannel channel = FlutterXiaomiMipushPlugin.channel;
         if(channel != null){
             CommonUtil.runMainThread(new Runnable() {
                 @Override
                 public void run() {
-                    Map<String, Object> map = JSON.parseObject(JSON.toJSONString(params), new TypeReference<Map<String, Object>>(){});
-                    channel.invokeMethod(method,map);
+                    channel.invokeMethod(method.name(),params);
                 }
             });
         }
     }
+}
+
+enum MessageType
+{
+    ReceivePassThroughMessage, NotificationMessageClicked, NotificationMessageArrived,CommandResult,ReceiveRegisterResult,RequirePermissions
 }

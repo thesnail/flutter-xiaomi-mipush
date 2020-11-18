@@ -3,12 +3,23 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_xiaomi_mipush/flutter-mipush-listener.dart';
+import 'package:fluttermipush/flutter-mipush-listener.dart';
+import 'package:fluttermipush/flutter_xiaomi_mipush.dart';
+import 'package:fluttermipush/model/mipush-command-message.dart';
 
 class FlutterMipush {
   static const MethodChannel _channel = const MethodChannel('com.xiaomi.mipush/flutter');
 
-  static FlutterMipushListener listener;
+  static FlutterMipushListener listener =  FlutterMipushListener(_channel);
+
+  ///
+  /// 检查进程是否运行
+  /// processName 进程名称
+  ///
+  static Future<bool> getProessRunning({@required String processName}) async {
+    final bool status = await _channel.invokeMethod('getProessRunning',{'processName':processName});
+    return status;
+  }
   
   ///
   /// 注册MiPush推送服务，建议在app启动的时候调用。(由开发者决定是否注册推送。)
@@ -137,24 +148,24 @@ class FlutterMipush {
   ///
   /// 获取客户端所有设置的别名。(开发者需要查询所设置的别名。)
   ///
-  static Future<List<String>> getAllAlias()async {
-    final List<String> list = await _channel.invokeMethod('getAllAlias');
+  static Future<List<dynamic>> getAllAlias()async {
+    final List<dynamic> list = await _channel.invokeMethod('getAllAlias');
     return list;
   }
 
   ///
   /// 获取客户端所有订阅的主题。(开发者需要查询所订阅的主题。)
   ///
-  static Future<List<String>> getAllTopic()async {
-    final List<String> list = await _channel.invokeMethod('getAllTopic');
+  static Future<List<dynamic>> getAllTopic()async {
+    final List<dynamic> list = await _channel.invokeMethod('getAllTopic');
     return list;
   }
 
   ///
   /// 获取客户端所有设置的帐号。(开发者需要查询所设置的账号。)
   ///
-  static Future<List<String>> getAllUserAccount()async {
-    final List<String> list = await _channel.invokeMethod('getAllUserAccount');
+  static Future<List<dynamic>> getAllUserAccount()async {
+    final List<dynamic> list = await _channel.invokeMethod('getAllUserAccount');
     return list;
   }
 
@@ -202,22 +213,102 @@ class FlutterMipush {
   }
 
   ///
-  /// 注册小米推送消息的监听
+  /// (透传消息)注册透传消息监听
+  ///
+  static void addPassThroughListener(MiPushListenerValue<MiPushMessage> func){
+    listener.addPassThroughListener(func);
+  }
+
+  ///
+  /// (透传消息)移除透传消息监听
+  ///
+  static void removePassThroughListener(MiPushListenerValue<MiPushMessage> func){
+    listener.removePassThroughListener(func);
+  }
+
+  ///
+  /// (通知消息)注册点击通知栏消息监听
+  ///
+  static void addMessageClickedListener(MiPushListenerValue<MiPushMessage> func){
+    listener.addMessageClickedListener(func);
+  }
+
+  ///
+  /// (通知消息)移除点击通知栏消息监听
+  ///
+  static void removeMessageClickedListener(MiPushListenerValue<MiPushMessage> func){
+    listener.removeMessageClickedListener(func);
+  }
+
+  ///
+  /// (通知消息)注册消息到达客户端时监听
+  ///
+  static void addMessageArrivedListener(MiPushListenerValue<MiPushMessage> func){
+    listener.addMessageArrivedListener(func);
+  }
+
+  ///
+  /// (通知消息)移除消息到达客户端时监听
+  ///
+  static void removeMessageArrivedListener(MiPushListenerValue<MiPushMessage> func){
+    listener.removeMessageArrivedListener(func);
+  }
+
+  ///
+  /// (发送命令)注册发送命令结果的监听
+  ///
+  static void addCommandListener(MiPushListenerValue<MiPushCommandMessage> func){
+    listener.addCommandListener(func);
+  }
+
+  ///
+  /// (发送命令)移除发送命令结果的监听
+  ///
+  static void removeCommandListener(MiPushListenerValue<MiPushCommandMessage> func){
+    listener.removeCommandListener(func);
+  }
+
+  ///
+  /// (发送注册命令) 注册发送注册命令的监听
+  ///
+  static void addReceiveRegisterListener(MiPushListenerValue<MiPushCommandMessage> func){
+    listener.addReceiveRegisterListener(func);
+  }
+
+  ///
+  /// (发送注册命令) 移除发送注册命令的监听
+  ///
+  static void removeReceiveRegisterListener(MiPushListenerValue<MiPushCommandMessage> func){
+    listener.removeReceiveRegisterListener(func);
+  }
+
+  ///
+  /// (权限获取) 注册权限未获取时回调接口监听
+  ///
+  static void addPermissionsListener(MiPushListenerValue<List<dynamic>> func){
+    listener.addPermissionsListener(func);
+  }
+
+  ///
+  /// (权限获取) 移除权限未获取时回调接口监听
+  ///
+  static void removePermissionsListener(MiPushListenerValue<List<dynamic>> func){
+    listener.removePermissionsListener(func);
+  }
+
+
+  ///
+  /// 添加小米推送消息监听,此方法返回的数据需要自己解析
   ///
   static void addListener(ListenerValue func){
-    if (listener == null) {
-      listener = FlutterMipushListener(_channel);
-    }
     listener.addListener(func);
   }
-  
+
   ///
   /// 移除小米推送消息的监听
   ///
-  static void removeListener(ListenerValue func) {
-   if (listener == null) {
-      listener = FlutterMipushListener(_channel);
-    }
+  static void removeListener(ListenerValue func){
     listener.removeListener(func);
   }
+
 }

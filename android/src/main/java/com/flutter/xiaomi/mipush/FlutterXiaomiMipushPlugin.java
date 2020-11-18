@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Process;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
@@ -164,6 +165,16 @@ public class FlutterXiaomiMipushPlugin implements FlutterPlugin, MethodCallHandl
             case "getRegId": { //获取客户端的RegId。
                 String regId = getRegId();
                 result.success(regId);
+                break;
+            }
+            case "getProessRunning":{
+                //String proessName = call.argument("proessName");
+                ActivityManager am = (ActivityManager) application.getSystemService(Context.ACTIVITY_SERVICE);
+                List<ActivityManager.RunningServiceInfo> lists = am.getRunningServices(100);
+                for(ActivityManager.RunningServiceInfo info : lists){
+                    /*if(info.processName.equals(proessName)){
+                    }*/
+                }
                 break;
             }
             default: {

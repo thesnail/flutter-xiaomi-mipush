@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - fluttermipush (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - fluttermipush (from `.symlinks/plugins/fluttermipush/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  fluttermipush:
+    :path: ".symlinks/plugins/fluttermipush/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  fluttermipush: 460d4391686e3631f0e9bd867a39621e3b4a0dc6
+
+PODFILE CHECKSUM: 8e679eca47255a8ca8067c4c67aab20e64cb974d
+
+COCOAPODS: 1.9.1
